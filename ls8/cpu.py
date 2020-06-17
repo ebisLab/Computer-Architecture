@@ -87,6 +87,8 @@ there."""
                 self.reg[index] = value
                 self.pc += 1
             if self.ram[self.pc] == HLT:
-                print("Stop/halt")
                 running = False
                 self.pc += 1
+            else:
+                print(f"Uknown instructions {ir} at address {self.pc}")
+                sys.exi(1)
