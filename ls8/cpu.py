@@ -75,6 +75,7 @@ there."""
         """Run the CPU."""
         HLT = 0b00000001
         LDI = 0b10000010
+        PRN = 0b01000111
         running = True
 
         while running:
@@ -84,7 +85,12 @@ there."""
                 value = self.ram_read(self.pc+2)
                 self.reg[index] = value
                 self.pc += 3  # incrementing by 3 since there are 3 instructions
-            if ir == HLT:
+            elif ir == PRN:
+                index == self.ram_read(self.pc + 1)
+                print(self.reg[index])
+                self.pc += 2
+
+            elif ir == HLT:
                 running = False
                 self.pc += 1
             else:
