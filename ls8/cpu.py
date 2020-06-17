@@ -12,14 +12,14 @@ class CPU:
         self.reg = [0] * 8  # general purpose registers
         self.pc = 0
 
-    def ram_read(self, place):
+    def ram_read(self, index):
         """hould accept the address to read and return the value stored
 there."""
-        return self.ram[place]
+        return self.ram[index]
 
-    def ram_write(self, place, value):
+    def ram_write(self, index, value):
         """should accept a value to write, and the address to write it to"""
-        return self.ram[place] == value
+        return self.ram[index] == value
 
     def load(self):
         """Load a program into memory."""
@@ -81,13 +81,13 @@ there."""
         while running:
             ir = self.ram_read(self.pc)
             if ir == LDI:
-                place = self.ram_read(self.pc+1)
+                index = self.ram_read(self.pc+1)
                 value = self.ram_read(self.pc+2)
-                self.reg[place] = value
+                self.reg[index] = value
                 self.pc += 3  # incrementing by 3 since there are 3 instructions
             elif ir == PRN:
-                place == self.ram_read(self.pc + 1)
-                print(self.reg[place])
+                index == self.ram_read(self.pc + 1)
+                print(self.reg[index])
                 self.pc += 2
 
             elif ir == HLT:
