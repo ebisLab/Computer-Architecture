@@ -13,9 +13,14 @@ class CPU:
         self.pc = 0
 
     def ram_read(self, index):
-        pass
+        """hould accept the address to read and return the value stored
+there."""
+        return self.ram[index]
 
     def ram_write(self, index, value):
+        """should accept a value to write, and the address to write it to"""
+        return self.ram[index] = value
+
         pass
 
     def load(self):
@@ -23,12 +28,11 @@ class CPU:
 
         address = 0
 
-
         # For now, we've just hardcoded a program:
-LDI = 0b10000010
+
         program = [
             # From print8.ls8
-            LDI,  # LDI R0,8
+            0b10000010,  # LDI R0,8
             0b00000000,
             0b00001000,
             0b01000111,  # PRN R0
@@ -71,4 +75,18 @@ LDI = 0b10000010
 
     def run(self):
         """Run the CPU."""
-        pass
+        HLT = 0b00000001
+        LDI = 0b10000010
+        running = True
+
+        while running:
+            ir = self.ram_read()
+            if self.ram_read(self.pc) == LDI:
+                index = self.load(program[pc+1])
+                value = program[pc+2]
+                self.reg[index] = value
+                self.pc += 1
+            if self.ram[self.pc] == HLT:
+                print("Stop/halt")
+                running = False
+                self.pc += 1
