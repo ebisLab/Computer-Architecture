@@ -19,9 +19,7 @@ there."""
 
     def ram_write(self, index, value):
         """should accept a value to write, and the address to write it to"""
-        return self.ram[index] = value
-
-        pass
+        return self.ram[index] == value
 
     def load(self):
         """Load a program into memory."""
@@ -80,15 +78,15 @@ there."""
         running = True
 
         while running:
-            ir = self.ram_read()
-            if self.ram_read(self.pc) == LDI:
-                index = self.load(program[pc+1])
-                value = program[pc+2]
+            ir = self.ram_read(self.pc)
+            if ir == LDI:
+                index = self.ram_read(self.pc+1)
+                value = self.ram_read(self.pc+2)
                 self.reg[index] = value
-                self.pc += 1
-            if self.ram[self.pc] == HLT:
+                self.pc += 3  # incrementing by 3 since there are 3 instructions
+            if ir == HLT:
                 running = False
                 self.pc += 1
             else:
                 print(f"Uknown instructions {ir} at address {self.pc}")
-                sys.exi(1)
+                sys.exit(1)
