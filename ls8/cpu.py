@@ -8,7 +8,7 @@ class CPU:
 
     def __init__(self):
         """Construct a new CPU."""
-        self.ram = []*256  # memory
+        self.ram = [0]*256  # memory
         self.reg = [0] * 8  # general purpose registers
         self.pc = 0
 
