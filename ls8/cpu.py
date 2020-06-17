@@ -9,17 +9,17 @@ class CPU:
     def __init__(self):
         """Construct a new CPU."""
         self.ram = []*256  # memory
-        self.reg = [0]*8  # general purpose registers
+        self.reg = [0] * 8  # general purpose registers
         self.pc = 0
 
-    def ram_read(self, index):
+    def ram_read(self, place):
         """hould accept the address to read and return the value stored
 there."""
-        return self.ram[index]
+        return self.ram[place]
 
-    def ram_write(self, index, value):
+    def ram_write(self, place, value):
         """should accept a value to write, and the address to write it to"""
-        return self.ram[index] == value
+        return self.ram[place] == value
 
     def load(self):
         """Load a program into memory."""
@@ -81,13 +81,13 @@ there."""
         while running:
             ir = self.ram_read(self.pc)
             if ir == LDI:
-                index = self.ram_read(self.pc+1)
+                place = self.ram_read(self.pc+1)
                 value = self.ram_read(self.pc+2)
-                self.reg[index] = value
+                self.reg[place] = value
                 self.pc += 3  # incrementing by 3 since there are 3 instructions
             elif ir == PRN:
-                index == self.ram_read(self.pc + 1)
-                print(self.reg[index])
+                place == self.ram_read(self.pc + 1)
+                print(self.reg[place])
                 self.pc += 2
 
             elif ir == HLT:

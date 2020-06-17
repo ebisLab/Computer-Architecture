@@ -47,8 +47,8 @@ memory = [
     1,  # <--PRINT BEEJ only if it lands on it, but CPU lands on instruction
     99,
     SAVE_REG,  # instruction that is 3 bite long
-    2,
-    11,
+    2,  # <--index into the register array
+    11,  # <--value we want stored
     ADD,  # ADD R1 R2 => register[1]+register[2]
     1,
     2,
@@ -99,12 +99,12 @@ while running:
     elif ir == PRINT_REG:
         reg_num == memory[pc + 1]
         print(register[reg_num])
-        pc += 2
+        pc += 2  # incrementing by 3 since there are 2 instructions
     elif ir == ADD:
         reg_num1 = memory[pc + 1]
         reg_num2 = memory[pc + 2]
         register[reg_num1] += register[reg_num2]
-        pc += 3
+        pc += 3  # incrementing by 3 since there are 3 instructions
     elif ir == HALT:
         running = False
         pc += 1
