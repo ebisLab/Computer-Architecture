@@ -41,22 +41,24 @@ ADD = 5
 #     HALT
 # ]
 
-memory = [
-    # SAVE_REG R1,37  #how can you encode this as a sequence of numbers
-    SAVE_REG,  # instruction that is 3 bite long
-    1,  # <--PRINT BEEJ only if it lands on it, but CPU lands on instruction
-    99,
-    SAVE_REG,  # instruction that is 3 bite long
-    2,  # <--index into the register array
-    11,  # <--value we want stored
-    ADD,  # ADD R1 R2 => register[1]+register[2]
-    1,
-    2,
-    PRINT_REG,  # PRINT_REG R1,
-    1,
-    PRINT_BEEJ,
-    HALT
-]
+# memory = [
+#     # SAVE_REG R1,37  #how can you encode this as a sequence of numbers
+#     SAVE_REG,  # instruction that is 3 bite long
+#     1,  # <--PRINT BEEJ only if it lands on it, but CPU lands on instruction
+#     99,
+#     SAVE_REG,  # instruction that is 3 bite long
+#     2,  # <--index into the register array
+#     11,  # <--value we want stored
+#     ADD,  # ADD R1 R2 => register[1]+register[2]
+#     1,
+#     2,
+#     PRINT_REG,  # PRINT_REG R1,
+#     1,
+#     PRINT_BEEJ,
+#     HALT
+# ]
+
+memory = [0]*256
 
 
 # for v in memory:
@@ -69,7 +71,7 @@ memory = [
 
 # general purpose registers, like variable R0, R1, R2... R7 ..use them directly
 # by default it initializes it to 0, that's when you turn your computer is 0
-register = [0]*8
+register = [0]*8  # general purpose
 pc = 0  # program counter (special purpose)
 running = True
 
@@ -85,6 +87,56 @@ running = True
 #         print(f"Uknown instruttion {ir} at address {pc} ")
 #         sys.exit(1)
 
+
+# == load program == #
+
+# with open("prog1.py") as f:
+#     for line in f:
+#         v = int(line)
+#         print(v)
+
+# with open("prog1.py") as f:
+#     for line in f:
+#         line = line.split("#")
+#         v = int(line[0])
+#         print(v)
+
+# # ----catch everything-------
+# with open("prog1.py") as f:
+#     address = 0
+
+#     for line in f:
+#         line = line.split("#")
+#         try:
+#             v = int(line[0])
+#         except ValueError:
+#             continue
+#         memory[address] = v
+#         address += 1
+# print(memory[:15]) #first 15
+
+# sys.exit(0)
+
+
+filename = sys.argv[1]
+# ----catch everything-------
+with open(filename) as f:
+    address = 0
+
+    for line in f:
+        line = line.split("#")
+        try:
+            v = int(line[0])
+        except ValueError:
+            continue
+        memory[address] = v
+#         address += 1
+# print(memory[:15])  # first 15
+# print(sys.argv)
+
+sys.exit(0)
+
+# == run loop
 
 while running:
     ir = memory[pc]  # instruction register

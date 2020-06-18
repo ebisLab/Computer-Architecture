@@ -19,28 +19,53 @@ there."""
 
     def ram_write(self, index, value):
         """should accept a value to write, and the address to write it to"""
-        return self.ram[index] == value
+        self.ram[index] = value
 
-    def load(self):
+    def load(self, filename):
         """Load a program into memory."""
-
-        address = 0
 
         # For now, we've just hardcoded a program:
 
-        program = [
-            # From print8.ls8
-            0b10000010,  # LDI R0,8
-            0b00000000,
-            0b00001000,
-            0b01000111,  # PRN R0
-            0b00000000,
-            0b00000001,  # HLT
-        ]
+        # program = [
+        #     # From print8.ls8
+        #     0b10000010,  # LDI R0,8
+        #     0b00000000,
+        #     0b00001000,
+        #     0b01000111,  # PRN R0
+        #     0b00000000,
+        #     0b00000001,  # HLT
+        # ]
 
-        for instruction in program:
-            self.ram[address] = instruction
-            address += 1
+        # LOAD PROGRAM
+
+        # program = [0]*256
+
+        # ERROR CHECKING ON sys.argv
+        # if len(sys.argv) == 2:
+        #     print('File not found: try again')
+        #     sys.exit(1)
+
+        address = 0
+        # ----catch everything-------
+        with open(filename) as f:
+            # address = 0
+
+            for line in f:
+                line = line.split("#")
+                try:
+                    v = int(line[0], 2)
+                except ValueError:
+                    continue
+                self.ram_write(address, v)
+                address += 1
+# print(memory[:15])  # first 15
+# print(sys.argv)
+
+# sys.exit(0)
+
+        # for instruction in program:
+        #     self.ram[address] = instruction
+        #     address += 1
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -50,6 +75,7 @@ there."""
         # elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
+            sys.exit(1)
 
     def trace(self):
         """
@@ -77,6 +103,8 @@ there."""
         LDI = 0b10000010
         PRN = 0b01000111
         running = True
+
+        # print(sys.argv)
 
         while running:
             ir = self.ram_read(self.pc)
