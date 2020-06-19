@@ -43,6 +43,7 @@ class CPU:
         }
         self.running = True
         self.sp = 7  # stack pointer
+        self.flag = 0b00000000
 
     def ram_read(self, index):
         """hould accept the address to read and return the value stored
@@ -78,6 +79,16 @@ there."""
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         # elif op == "SUB": etc
+        if op == "CMP":
+            if self.reg[reg_a] == self.reg[reg_b]:
+                self.flag = 0b00000001
+            elif self.reg[reg_a] < self.reg[reg_b]:
+                self.flag = 0b00000100
+            elif self.reg[reg_a] > self.reg[reg_b]:
+                self.flag = 0b00000010
+            else:
+                self.flag = 0b00000000
+
         else:
             raise Exception("Unsupported ALU operation")
             # sys.exit(1)
@@ -179,22 +190,33 @@ there."""
         self.pc += 3
 
     def cmp_op(self, value_operand1, value_operand2):
-        self.reg[value_operand1] = value_operand2
+
+        self.alu("CMP", value_operand1, value_operand2)
+
         self.pc += 3
 
     def jeq(self, value_operand1, value_operand2):
-        print(self.reg[value_operand1])
-        self.pc += 2
+
+        # val = self.pc + 2
+        # reg_index = value_operand1
+
+        # subroutine_addr = self.reg[reg_index]
+        # self.reg[self.sp] -= 1
+
+        # self.ram[self.reg[self.sp]] = val
+
+        # self.pc = subroutine_addr
+        if self.flag == 0b00000001:
+            return_addr = value_operand1
+            self.pc = self.reg[return_addr]
 
     def jne(self, value_operand1, value_operand2):
         print(self.reg[value_operand1])
         self.pc += 2
 
     def jmp(self, value_operand1, value_operand2):
-        print(self.reg[value_operand1])
-        self.pc += 2
+        return_addr = value_operand1
 
-    # CMP: self.cmp,
-    # JMP: self.jmp,
-    # JEQ: self.jeq,
-    # JNE: self.jne
+        # seting pc to address stored in the register
+        self.pc = self.reg[return_addr]
+        print(f'pc stored in {self.pc}')
