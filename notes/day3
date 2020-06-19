@@ -1,0 +1,50 @@
+main operation you can do on a stack
+
+push -> put something on the stack  #actual CPU Instructions
+pop -> take something off the stack
+
+peak -> look at the item on top of the stack
+is empty -> is the stack empty or not
+
+Need these to implement a stack
+# list -- a place to store the data that we push
+# the location in the list of the top of the stack
+
+
+Let's:
+* store the stack data in RAM
+* use R7 to hold the address of he otp of hte stack 
+    * gets initialized to 0xf4 when the achine boos up
+
+Not the LS-8 but a stakc all the same:
+  v
+1,2,3,4,5,6,7,8 index
+0 0 0 0 0 0 0 0 value
+
+PUSH 5
+PUSH 7
+PUSH 2
+
+Stack is general purpose not special purpose
+
+Instructions:
+
+PUSH R0
+RUSH R1
+POP R2 <<
+POP R1
+
+Push:
+
+1. Decrement the SP (R7) (Hex #)
+2. Copy the value in the given register to the address pointed by SP
+
+Pop: 
+1. Copy the value from memory at the addrss pointed from by stack pointer (SP) into hte register
+2. Increment the SP
+
+R[7]  ==  F2
+RAM[F2] == 32
+RAM[R[7]]==32
+
+

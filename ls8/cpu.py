@@ -6,6 +6,8 @@ HLT = 0b00000001
 LDI = 0b10000010
 PRN = 0b01000111
 MUL = 0b10100010  # MUL R0,R1
+PUSH = 0b01000101
+POP = 0b01000110
 
 
 class CPU:
@@ -20,9 +22,12 @@ class CPU:
             HLT: self.hlt,
             LDI: self.ldi,
             PRN: self.prn,
-            MUL: self.mul
+            MUL: self.mul,
+            PUSH: self.push_op,
+            POP: self.pop_op
         }
         self.running = True
+        self.sp = 7  # stack pointer
 
     def ram_read(self, index):
         """hould accept the address to read and return the value stored
@@ -127,6 +132,23 @@ there."""
         self.pc += 2
 
     def mul(self, value_operand1, value_operand2):
+
         self.reg[value_operand1] = self.reg[value_operand1] * \
             self.reg[value_operand2]
         self.pc += 3
+
+    def push_op(self, value_operand1, value_operand2):
+        val = self.reg[value_operand1]  # this is the value we want to push
+        self.reg[self.sp] -= 1  # decrementing stack pointer
+
+        # registering number, grabbing from the memory and strore it
+        self.ram_write(self.reg[self.sp], val)
+        self.pc += 2
+
+    def pop_op(self, value_operand1, value_operand2):
+
+        val = self.ram[self.reg[self.sp]]
+        self.reg[value_operand1] = val
+        self.reg[self.sp] += 1
+
+        self.pc += 2
