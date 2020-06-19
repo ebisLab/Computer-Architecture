@@ -22,6 +22,8 @@ PRINT_REG = 4  # PRINT_REG R1   print(register[1])
 ADD = 5
 PUSH = 6
 POP = 7
+CALL = 8
+RET = 9
 
 
 memory = [0]*256
@@ -92,6 +94,27 @@ while running:
         register[reg_num] = memory[register[SP]]
         register[SP] += 1
         pc += 2
+    elif ir == CALL:
+        # where we're going to return to , return in stack
+        return_addr = pc + 2
+
+        # decrement on stack poiner
+        register[SP] -= 1
+
+        # store value on reurn address on a stack
+        memory[register[SP]] = return_addr
+
+        # get the address to call
+        reg_num = memory[pc + 1]
+        subroutine_addr = register[reg_num]
+
+        # call it
+        pc = subroutine_addr
+
+    # elif ir == RET:
+    #     # running = False
+    #     # pc += 1
+    #     reurn
 
     elif ir == HALT:
         running = False

@@ -1,0 +1,54 @@
+def foo():
+    print(1)
+
+def bar():
+    print(2)
+    foo()
+    print(3)
+
+bar()
+
+foo()
+
+print('Done')
+
+The order the lines run is:
+---------------------------
+9
+5
+6
+2
+7
+11
+
+* When you call:
+    push the return addr on the stack 
+    Set the PC to the addr of he subroutine
+
+When we return:
+    Pop the rerurn aaddr off the stack
+    Store it in the PC
+
+stack
+-----
+11
+7
+
+
+PUSH arg1
+PUSH arg2
+CALL sub1
+PRN r0
+
+When calling, we can use the following for arguments and return values:
+
+registers (commonly used for both)
+memory
+stack(commonly used for arguments)
+
+
+01010000 CALL r0   <--instructions is 2 
+00000000      <--PC + 1
+01000111 PRN R1
+00000001
+

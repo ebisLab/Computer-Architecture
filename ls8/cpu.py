@@ -8,6 +8,9 @@ PRN = 0b01000111
 MUL = 0b10100010  # MUL R0,R1
 PUSH = 0b01000101
 POP = 0b01000110
+CALL = 0b01010000
+RET = 0b00010001
+ADD = 0b10100000
 
 
 class CPU:
@@ -24,7 +27,11 @@ class CPU:
             PRN: self.prn,
             MUL: self.mul,
             PUSH: self.push_op,
-            POP: self.pop_op
+            POP: self.pop_op,
+            CALL: self.call_op,
+            RET: self.ret,
+            ADD: self.add_op
+
         }
         self.running = True
         self.sp = 7  # stack pointer
@@ -41,18 +48,6 @@ there."""
     def load(self, filename):
         """Load a program into memory."""
 
-        # For now, we've just hardcoded a program:
-
-        # program = [
-        #     # From print8.ls8
-        #     0b10000010,  # LDI R0,8
-        #     0b00000000,
-        #     0b00001000,
-        #     0b01000111,  # PRN R0
-        #     0b00000000,
-        #     0b00000001,  # HLT
-        # ]
-
         # LOAD PROGRAM
 
         address = 0
@@ -68,10 +63,6 @@ there."""
                     continue
                 self.ram_write(address, v)
                 address += 1
-
-        # for instruction in program:
-        #     self.ram[address] = instruction
-        #     address += 1
 
     def alu(self, op, reg_a, reg_b):
         """ALU operations."""
@@ -152,3 +143,29 @@ there."""
         self.reg[self.sp] += 1
 
         self.pc += 2
+
+    def call_op(self, value_operand1, value_operand2):
+
+        val = self.pc + 2
+        reg_index = value_operand1
+
+        subroutine_addr = self.reg[reg_index]
+        self.reg[self.sp] -= 1
+
+        self.ram[self.reg[self.sp]] = val
+
+        self.pc = subroutine_addr
+
+    def ret(self, value_operand1, value_operand2):
+        return_addr = self.reg[self.sp]  # return from subroutine
+
+        # pop value from top of the stack and store it in the PC
+        self.pc = self.ram_read(return_addr)
+
+        # increment sp
+        self.reg[self.sp] += 1
+
+    def add_op(self, value_operand1, value_operand2):
+        # self.reg[value_operand1] += self.reg[value_operand2]
+        self.alu('ADD', value_operand1, value_operand2)
+        self.pc += 3
