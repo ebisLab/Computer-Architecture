@@ -11,6 +11,10 @@ POP = 0b01000110
 CALL = 0b01010000
 RET = 0b00010001
 ADD = 0b10100000
+CMP = 0b10100111
+JMP = 0b01010100
+JEQ = 0b01010101
+JNE = 0b01010110
 
 
 class CPU:
@@ -30,7 +34,11 @@ class CPU:
             POP: self.pop_op,
             CALL: self.call_op,
             RET: self.ret,
-            ADD: self.add_op
+            ADD: self.add_op,
+            CMP: self.cmp_op,
+            JMP: self.jmp,
+            JEQ: self.jeq,
+            JNE: self.jne
 
         }
         self.running = True
@@ -169,3 +177,24 @@ there."""
         # self.reg[value_operand1] += self.reg[value_operand2]
         self.alu('ADD', value_operand1, value_operand2)
         self.pc += 3
+
+    def cmp_op(self, value_operand1, value_operand2):
+        self.reg[value_operand1] = value_operand2
+        self.pc += 3
+
+    def jeq(self, value_operand1, value_operand2):
+        print(self.reg[value_operand1])
+        self.pc += 2
+
+    def jne(self, value_operand1, value_operand2):
+        print(self.reg[value_operand1])
+        self.pc += 2
+
+    def jmp(self, value_operand1, value_operand2):
+        print(self.reg[value_operand1])
+        self.pc += 2
+
+    # CMP: self.cmp,
+    # JMP: self.jmp,
+    # JEQ: self.jeq,
+    # JNE: self.jne
