@@ -79,7 +79,8 @@ there."""
         if op == "ADD":
             self.reg[reg_a] += self.reg[reg_b]
         # elif op == "SUB": etc
-        if op == "CMP":
+        if op == "CMP":  # flags are internal registers
+            # cmp = 0b10100111 flags are last 3
             if self.reg[reg_a] == self.reg[reg_b]:
                 self.flag = 0b00000001
             elif self.reg[reg_a] < self.reg[reg_b]:
@@ -197,26 +198,27 @@ there."""
 
     def jeq(self, value_operand1, value_operand2):
 
-        # val = self.pc + 2
-        # reg_index = value_operand1
-
-        # subroutine_addr = self.reg[reg_index]
-        # self.reg[self.sp] -= 1
-
-        # self.ram[self.reg[self.sp]] = val
-
-        # self.pc = subroutine_addr
+        # if flag is true:
         if self.flag == 0b00000001:
-            return_addr = value_operand1
-            self.pc = self.reg[return_addr]
+            # if self.flag == [1]:
+            self.pc = self.reg[value_operand1]
+            # self.pc = self.reg[self.ram[self.pc + 1]]
+        else:
+            self.pc += 2
 
     def jne(self, value_operand1, value_operand2):
-        print(self.reg[value_operand1])
-        self.pc += 2
+
+        # if flag is false:
+        if self.flag != 0b00000001:
+            # self.pc = self.reg[self.ram[self.pc + 1]]
+
+            self.pc = self.reg[value_operand1]
+
+        else:
+            self.pc += 2
 
     def jmp(self, value_operand1, value_operand2):
-        return_addr = value_operand1
 
         # seting pc to address stored in the register
-        self.pc = self.reg[return_addr]
-        print(f'pc stored in {self.pc}')
+        self.pc = self.reg[value_operand1]
+        print(f'pc instruction stored in {self.pc}')
