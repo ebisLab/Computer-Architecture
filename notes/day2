@@ -1,0 +1,96 @@
+Bitwise Operations
+------------------
+
+Review Boolean
+
+if x<10 and x>2:
+    prin("foo")  <--- runs
+
+if x<10 or x>2:
+    prin("foo")  <--- runs
+
+
+TRUTH TABLE
+A   B    A AND B
+-----------------
+F   F        F
+T   F        F
+F   T        F
+T   T        T 
+
+TRUTH TABLE
+A   B    A or B
+-----------------
+F   F        F
+T   F        T
+F   T        T
+T   T        T 
+
+
+Bitwise:
+
+A   B    A & B
+-----------------
+0   0        0
+1   0        0
+0   1        0
+1   1        1 
+
+TRUTH TABLE
+A   B    A | B
+-----------------
+0   0        0
+1   0        1
+0   1        1
+1   1        1 
+
+  11001100
+& 11110000  AND Mask
+-----------
+  11000000
+
+0b11111111 =255
+
+255.255.255.0
+
+
+In general:
+* You can use AND to clear set to 0 Bits
+* You can use OR to set (set to 1 ) Bits
+
+Shifting
+-------
+
+Moving all bits in a number left or right
+
+111001
+011100
+001110
+000111
+
+AND Mask
+   123456789
+d& 009900000 First AND
+------------
+   003400000 Then Shift 
+   00034
+
+       vv
+ir = 0b1000010
+
+   100000010
+ & 110000000
+ ------------
+   100000000
+   ^^
+   000000010
+
+   num_operands = (ir & 0b1100000000) >> 6
+
+   how_far_to_move_pc = num_operands + 1
+
+   pc += how_far_to_move_pc
+
+   LDI R1,R2
+
+

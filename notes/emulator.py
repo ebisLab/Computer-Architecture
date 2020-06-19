@@ -126,7 +126,7 @@ with open(filename) as f:
     for line in f:
         line = line.split("#")
         try:
-            v = int(line[0])
+            v = int(line[0], 10)
         except ValueError:
             continue
         memory[address] = v

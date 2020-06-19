@@ -2,6 +2,11 @@
 
 import sys
 
+HLT = 0b00000001
+LDI = 0b10000010
+PRN = 0b01000111
+MUL = 0b10100010  # MUL R0,R1
+
 
 class CPU:
     """Main CPU class."""
@@ -11,6 +16,13 @@ class CPU:
         self.ram = [0]*256  # memory
         self.reg = [0] * 8  # general purpose registers
         self.pc = 0
+        self.branchtable = {
+            HLT: self.hlt,
+            LDI: self.ldi,
+            PRN: self.prn,
+            MUL: self.mul
+        }
+        self.running = True
 
     def ram_read(self, index):
         """hould accept the address to read and return the value stored
@@ -38,13 +50,6 @@ there."""
 
         # LOAD PROGRAM
 
-        # program = [0]*256
-
-        # ERROR CHECKING ON sys.argv
-        # if len(sys.argv) == 2:
-        #     print('File not found: try again')
-        #     sys.exit(1)
-
         address = 0
         # ----catch everything-------
         with open(filename) as f:
@@ -58,10 +63,6 @@ there."""
                     continue
                 self.ram_write(address, v)
                 address += 1
-# print(memory[:15])  # first 15
-# print(sys.argv)
-
-# sys.exit(0)
 
         # for instruction in program:
         #     self.ram[address] = instruction
@@ -75,7 +76,7 @@ there."""
         # elif op == "SUB": etc
         else:
             raise Exception("Unsupported ALU operation")
-            sys.exit(1)
+            # sys.exit(1)
 
     def trace(self):
         """
@@ -99,28 +100,91 @@ there."""
 
     def run(self):
         """Run the CPU."""
-        HLT = 0b00000001
-        LDI = 0b10000010
-        PRN = 0b01000111
-        running = True
+        # HLT = 0b00000001
+        # LDI = 0b10000010
+        # PRN = 0b01000111
+        # MUL = 0b10100010  # MUL R0,R1
+        # running = True
 
         # print(sys.argv)
 
-        while running:
-            ir = self.ram_read(self.pc)
-            if ir == LDI:
-                index = self.ram_read(self.pc+1)
-                value = self.ram_read(self.pc+2)
-                self.reg[index] = value
-                self.pc += 3  # incrementing by 3 since there are 3 instructions
-            elif ir == PRN:
-                index == self.ram_read(self.pc + 1)
-                print(self.reg[index])
-                self.pc += 2
+        # while running:
+        #     ir = self.ram_read(self.pc)
+        #     if ir == LDI:
+        #         index = self.ram_read(self.pc+1)
+        #         value = self.ram_read(self.pc+2)
+        #         self.reg[index] = value
+        #         self.pc += 3  # incrementing by 3 since there are 3 instructions
+        #     elif ir == PRN:
+        #         index == self.ram_read(self.pc + 1)
+        #         print(self.reg[index])
+        #         self.pc += 2
+        #     elif ir == MUL:
+        #         index1 == self.ram_read(self.pc+1)
+        #         index2 == self.ram_read(self.pc+2)
+        #         # reg_num1 = memory[pc + 1]
+        #         # reg_num2 = memory[pc + 2]
+        #         self.reg([index1]) += self.reg([index2])
 
-            elif ir == HLT:
-                running = False
-                self.pc += 1
+        #         # register[reg_num1] += register[reg_num2]
+
+        #         self.pc += 3
+
+        #     elif ir == HLT:
+        #         running = False
+        #         self.pc += 1
+        #     else:
+        #         print(f"Uknown instructions {ir} at address {self.pc}")
+        #         sys.exit(1)
+
+        while self.running:
+            # self.trace()
+
+            value_operand1 = self.ram_read(self.pc + 1)
+            value_operand2 = self.ram_read(self.pc + 2)
+
+            ir = self.ram_read(self.pc)
+
+            if ir in self.branchtable:
+                self.branchtable[ir](value_operand1, value_operand2)
+                # index = self.ram_read(self.pc+1)
+                # value = self.ram_read(self.pc+2)
+                # self.reg[index] = value
+                # self.pc += 3  # incrementing by 3 since there are 3 instructions
+            # elif ir == PRN:
+            #     index == self.ram_read(self.pc + 1)
+            #     print(self.reg[index])
+            #     self.pc += 2
+            # elif ir == MUL:
+            #     index1 == self.ram_read(self.pc+1)
+            #     index2 == self.ram_read(self.pc+2)
+            #     # reg_num1 = memory[pc + 1]
+            #     # reg_num2 = memory[pc + 2]
+            #     self.reg([index1]) += self.reg([index2])
+
+            #     # register[reg_num1] += register[reg_num2]
+
+            #     self.pc += 3
+
+            # elif ir == HLT:
+            #     running = False
+            #     self.pc += 1
             else:
                 print(f"Uknown instructions {ir} at address {self.pc}")
                 sys.exit(1)
+
+    def hlt(self, value_operand1, value_operand2):
+        self.running = False
+
+    def ldi(self, value_operand1, value_operand2):
+        self.reg[value_operand1] = value_operand2
+        self.pc += 3
+
+    def prn(self, value_operand1, value_operand2):
+        print(self.reg[value_operand1])
+        self.pc += 2
+
+    def mul(self, value_operand1, value_operand2):
+        self.reg[value_operand1] = self.reg[value_operand1] * \
+            self.reg[value_operand2]
+        self.pc += 3
